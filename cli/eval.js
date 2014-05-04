@@ -7,7 +7,7 @@
 
 // TODO: Remove depricated function we now have REPL
 cli.eval = function CLI_Eval(input) {
-	console.log('CLI_Eval');
+  console.log('CLI_Eval');
   // Eval if single line given or if no input open a repl
   if (input.length) {
     eval(input); 

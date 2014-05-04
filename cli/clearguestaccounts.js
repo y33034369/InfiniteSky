@@ -7,12 +7,10 @@
 
 
 cli.clearguestaccounts = function CLI_ClearGuestAccounts(input) {
- if (!db) {
- 	console.log('Database not loaded yet');
- 	return;
- }
-
-
+  if (!db) {
+    console.log('Database not loaded yet');
+    return;
+  }
 
   db.Account.find({Username: {$regex: 'Guest' } },'_id',function(err,docs){
     if (err) {
@@ -20,7 +18,7 @@ cli.clearguestaccounts = function CLI_ClearGuestAccounts(input) {
       return;
     }
     
-    for (var i=0;i<docs.length;i++) {
+    for (var i = 0; i < docs.length; i++) {
       db.Character.remove({ "AccountID": docs[i]._id });
     }
 

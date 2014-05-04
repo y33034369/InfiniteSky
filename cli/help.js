@@ -11,6 +11,7 @@ cli.help = function CLI_Help(input) {
   if (input !== '') {
     if (typeof (cli[input]) === 'function') {
       console.log(input + ' help');
+
       if (typeof (cli[input].help) === 'function') {
         console.log('description: ' + cli[input].help(input));
       }
@@ -19,16 +20,19 @@ cli.help = function CLI_Help(input) {
   }
 
   var name, output;
+
   for (name in cli) {
     if (cli.hasOwnProperty(name)) {
       output = name;
+
       if (typeof (cli[name]) === 'function' && typeof (cli[name].help) === 'function') {
         output += ' - ' + cli[name].help();
       }
+
       console.log(output);
     }
   }
-};
+}; // end cli.help
 
 cli.help.help = function CLI_Help_help(input) {
   return 'Shows a list of commands you can enter.';

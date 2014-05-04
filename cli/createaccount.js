@@ -6,51 +6,57 @@
 /*global cli */
 
 cli.createaccount = function CLI_CreateAccount(input) {
- if (input === '') {
- 	return console.log(cli.createaccount.help(1));
- }
+  var info = _util.sep(['Username','Password','Level'], input.split(' '));
 
- var info = _util.sep(['Username','Password','Level'], input.split(' '));
- if (info.Username === undefined || info.Password === undefined) {
- 	console.log('Username and Password required');
- 	return;
- }
+  if (!input) {
+    return console.log(cli.createaccount.help(1));
+  }
 
- if (info.Level === undefined) {
- 	info.Level = 0;
- } else {
- 	info.Level*=1;
- 	if (Number.isNaN(info.Level) || info.Level != Math.floor(info.Level) || !(info.Level >= 0 && info.Level <=100)) {
- 		return console.log('Account level should be a whole number from 0 to 100 inclusive.');
- 	}
- }
+  if (!info.Username || !info.Password) {
+    console.log('Username and Password required');
+    return;
+  }
 
- if (!db) {
- 	console.log('Database not loaded yet');
- 	return;
- }
+  if (!info.Level) {
+    info.Level = 0;
+  } else {
+    info.Level *= 1;
+
+    if (Number.isNaN(info.Level) || info.Level != Math.floor(info.Level) || !(info.Level >= 0 && info.Level <=100)) {
+      return console.log('Account level should be a whole number from 0 to 100 inclusive.');
+    }
+  }
+
+  if (!db) {
+    console.log('Database not loaded yet');
+    return;
+  }
  
   // TODO: Move create account into db/account.js as a function
   // TODO: Make a delete account function and maybe ban/suspend?
   // TODO: Make a reset password for account function.
   db.getNextSequence('accountid',function(id) {
-  	info._id = id;
-  	var newaccount = new db.Account(info);
-  	newaccount.save(function (err) {
-  		  if (err) { // Assuming account already exists
-  		    dumpError('Error making account already exists or there was an error.');
-  		  	return;
-  		  }
-  		  console.log('Account '+info.Username+' has been created.');
-  	});
-  });
+    info._id = id;
 
-};
+    var newaccount = new db.Account(info);
+
+    newaccount.save(function (err) {
+      if (err) { // Assuming account already exists
+        dumpError('Error making account already exists or there was an error.');
+        return;
+      }
+
+      console.log('Account '+info.Username+' has been created.');
+    });
+  });
+}; // end cli.createaccount
 
 cli.createaccount.help = function CLI_CreateAccount_help(input) {
   var basicDescription = 'Lets you create an account.';
+
   if (!input) {
-  	return basicDescription;
+    return basicDescription;
   }
+
   return basicDescription + '\nUsage: createaccount username password gmlevel\nExample: createaccount bobby tables 100\n\nLevel is optional default is 0.\nAccount will have no email set.';
 };

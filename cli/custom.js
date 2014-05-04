@@ -6,9 +6,10 @@
 // You can modify the prototypes functions such as test and change the text in the repl
 // it will change to what you put in and save
 // Try executing Custom.test();
+
 function Custom() {
   this.number = 1;
-  this.testa = function(){ return 2; }
+  this.testa  = function() { return 2; }
 }
 
 Custom.prototype = {
@@ -27,5 +28,5 @@ Custom.prototype = {
 }
 
 module.exports = Custom;
-module.name = 'Custom';
-module.merge = true;
+module.name    = 'Custom';
+module.merge   = true;
