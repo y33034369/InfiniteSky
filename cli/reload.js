@@ -12,10 +12,10 @@ vms.depends(
   function () {
     var reloadables = {
       'config' : [ 'Reloads config file: ' + _util.configFile, _util.loadConfig() ],
-      'item'   : [ 'Reloads item info: ', infos.Item.Reload ],
-      'npc'    : [ 'Reloads npc info: ', infos.Npc.Reload ],
+      'item'   : [ 'Reloads item info: ',    infos.Item.Reload ],
+      'npc'    : [ 'Reloads npc info: ',     infos.Npc.Reload ],
       'monster': [ 'Reloads monster info: ', infos.Monster.Reload ],
-      'skill'  : [ 'Reloads skill info: ', infos.Skill.Reload ]
+      'skill'  : [ 'Reloads skill info: ',   infos.Skill.Reload ]
     };
 
     // TODO: Reload other things

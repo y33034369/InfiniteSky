@@ -7,13 +7,13 @@
 
 function infoToCSV(name, keys, callback) {
   // Check if not exist
-  if (infos[name] === undefined) {
+  if (!infos[name]) {
     callback('infos.' + name + ' does not exist!');
     return;
   }
 
   // Check if not loaded
-  if (infos[name].Loaded == false) {
+  if (!infos[name].Loaded) {
     callback('infos.' + name + ' is not loaded!');
     return;
   }
@@ -77,4 +77,3 @@ cli.makecsv = function CLI_MakeCSV(input) {
 cli.makecsv.help = function CLI_MakeCSV_help(input) {
   return 'Makes csv files for translation use.';
 };
-
