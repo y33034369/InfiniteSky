@@ -244,6 +244,7 @@ restruct.
 
 // If we have not loaded the item info yet then load it
 if (infos.Item === undefined) LoadItemInfo();
+
 infos.Item.Type = {
 	SilverCoins: 1,
 	Common: 2,

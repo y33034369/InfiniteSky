@@ -4,30 +4,7 @@
 // Need to setup testing :).
 var hexy = require('hexy').hexy;
 var util = require('./util');
-// function logHex(data) {
-//   if (data===null || data.length==0) return;
-//   console.log("\n");
-//   console.log(data);
-//   var testSplit = data.toString("hex");
-//   console.log(testSplit);
-//   testSplit = testSplit.match(/../g);
-//   console.log(testSplit);
-//   var lineVal = "";
-//   var asciiVal = "";
-//   var hexCounter = 0;
-//   var c = "";
-//   for(var i = 0; i < testSplit.length; i++) {
-//     lineVal += testSplit[i] + " ";
-//     c = String.fromCharCode(data[i]);
-//     asciiVal += c;
-//     hexCounter++;
-//     if(hexCounter == 15) {
-//       console.log(lineVal + ' - ' + asciiVal);
-//       lineVal = "";
-//       hexCounter = 0;
-//     }
-//   }
-// }
+
 // Should add in a way to test different packet id's.
 var CachedBuffer = function(packet_collection, options) {
         this.BufferSize = 10240;
@@ -39,10 +16,10 @@ var CachedBuffer = function(packet_collection, options) {
         this.badLimit = 0;
         var onDataInProgress = false;
         if(options) {
-            this.BufferSize = options.BufferSize;
-            this.HeaderSize = options.HeaderSize;
+            this.BufferSize  = options.BufferSize;
+            this.HeaderSize  = options.HeaderSize;
             this.PacketIDPos = options.PacketIDPos;
-            this.badLimit = options.badLimit;
+            this.badLimit    = options.badLimit;
         }
         // PacketIDPos should not be > HeaderSize
         this.onData = function(newData) {
@@ -59,48 +36,49 @@ var CachedBuffer = function(packet_collection, options) {
             var packet;
             do {
                 packet = null;
-                if(this.bufferLength - position >= this.HeaderSize) // If has enough space for header and packet id
-                {
+
+                if(this.bufferLength - position >= this.HeaderSize) { // If has enough space for header and packet id
                     // Could read header here if we cared.
                     var PositionBeforePacketID = position;
                     var packetID = this.data.readUInt8(position + this.PacketIDPos);
                     //console.log('Position: '+position+' IDPos: '+ (position + this.PacketIDPos));
                     //console.log('DATA HEADER RECV: ',this.data.slice(position,position+10));
                     position += this.HeaderSize;
-                    packet = packet_collection.Get(packetID);
+                    packet    = packet_collection.Get(packetID);
+
                     if(packet != null) {
-                        if (this.debug) {
-                        if(packetID === packet_collection.LastAdded) {
+                        if (this.debug && packetID === packet_collection.LastAdded) {
                             console.log('\x1b[31;5m---------------- Last Added Packet ----------------\x1b[0m');
+                            console.log('PacketID: 0x' + _util.padLeft(packetID.toString(16).toUpperCase(),'0',2) + ' bufsize: ' + (this.bufferLength - position) + ' ' + packet.
+                            function.name);
                         }
-                        console.log('PacketID: 0x' + _util.padLeft(packetID.toString(16).toUpperCase(),'0',2) + ' bufsize: ' + (this.bufferLength - position) + ' ' + packet.
-                        function.name);
-                        }
+
                         //console.log('PacketFunction: '+packet.function.name);
                         if(!packet.Restruct) { // Check if not a restruct packet
                             // Check if not a packet with data, for example this packet would only have a header/ID no data.
                             if(!packet.Size || packet.Size == 0) {
                                 try {
-                                    packet.
-                                    function(this, packetID);
+                                    packet.function(this, packetID);
                                 } catch(ex) {
                                     // For testing only...
                                     this.bufferLength = 0;
                                     dumpError(ex)
                                 }
+
                                 this.badCount = 0;
                             } else if(packet.Size && this.bufferLength - position >= packet.Size) { // Check for a packet with Size
                                 if(this.debug) {
                                     console.log('PacketSize: ' + packet.Size);
                                 }
+
                                 try {
-                                    packet.
-                                    function(this, this.data.slice(position, position + packet.Size), packetID);
+                                    packet.function(this, this.data.slice(position, position + packet.Size), packetID);
                                 } catch(ex) {
                                     // For testing only...
                                     this.bufferLength = 0;
                                     dumpError(ex)
                                 }
+
                                 position += packet.Size;
                                 this.badCount = 0;
                             } else { // No check matched, maybe not enough data or bad packet definition?
@@ -111,6 +89,7 @@ var CachedBuffer = function(packet_collection, options) {
                             if(this.debug) {
                                 console.log('PacketSize: ' + packet.Restruct.size);
                             }
+
                             try {
                                 packet.
                                 function(this, packet.Restruct.unpack(this.data.slice(position, position + packet.Restruct.size)), packetID);
@@ -119,6 +98,7 @@ var CachedBuffer = function(packet_collection, options) {
                                 this.bufferLength = 0;
                                 dumpError(ex)
                             }
+
                             position += packet.Restruct.size;
                             this.badCount = 0;
                         } else {
@@ -126,7 +106,10 @@ var CachedBuffer = function(packet_collection, options) {
                         }
                     } else {
                         // unreconized packet id
-                        if(this.onUnrecognizedPacket) this.onUnrecognizedPacket(packetID);
+                        if(this.onUnrecognizedPacket) {
+                            this.onUnrecognizedPacket(packetID);
+                        }
+
                         console.log('Unreconized PacketID: 0x' + _util.padLeft(packetID.toString(16).toUpperCase(),'0',2) + ' Size: ' + (this.bufferLength - position));
                         //logHex(this.data.slice(position,this.bufferLength));
                         console.log(hexy(this.data.slice(position, this.bufferLength)));
@@ -139,14 +122,19 @@ var CachedBuffer = function(packet_collection, options) {
                         //position = 0;
                         this.badCount++;
                     }
+
                     if(packet === null) {
                         position = PositionBeforePacketID;
                         this.badCount++;
                     }
+
                     if(this.badLimit && this.badCount >= this.badLimit) {
-                        if(this.onBadfunction) this.onBadfunction();
+                        if(this.onBadfunction) { 
+                            this.onBadfunction();
+                        }
                     }
                 }
+                
                 // If socket is closed now
                 if(!this._handle) break;
                 // break;

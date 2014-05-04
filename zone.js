@@ -92,16 +92,17 @@ Zone_Prototype.findCharacterSocket = function(Name) {
     return socket;
 };
 
-Zone_Prototype.findSocketByCharacterID = function(CharacterID) {
+Zone_Prototype.findSocketByCharacterID = function (CharacterID) {
     var socket = null;
     // Search connected clients
     //console.log('There are this many clients in zone ' + this.Clients.length);
-    for(var i = 0; i < this.Clients.length; ++i) {
+    for (var i = 0; i < this.Clients.length; ++i) {
         if(this.Clients[i].character._id == CharacterID && this.Clients[i]._handle) {
             socket = this.Clients[i];
             break;
         }
     }
+
     return socket;
 };
 
@@ -110,14 +111,19 @@ Zone_Prototype.removeSocket = function(socket) {
     // Remove any zone timers and such
     console.log('Removing Socket');
     this.QuadTree.removeNode(socket.node.id);
+
     if(this.zone_script.onClientLeave) this.zone_script.onClientLeave(socket);
     //this.Clients = this.Clients.splice(this.Clients.indexOf(socket), 1);
+
     this.Clients.slice(this.Clients.indexOf(socket), 1);
 };
 
 Zone_Prototype.forEachClient = function(func) {
     this.Clients.forEach(function(client) {
-        if(client.authenticated == false) return;
+        if(client.authenticated == false) {
+          return;
+        }
+
         return func.call(client);
     });
 };
