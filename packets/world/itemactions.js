@@ -2,11 +2,11 @@
 
 // ###############
 
-var NotImplemented = function(client, name, input) {
-  var msg = 'Item Action: ' + name + ' is not implemented.';
-
-  console.log(msg);
-  client.sendInfoMessage(msg);
+function WriteInfo(client, input, bFailed, msg) {
+  if (msg) {
+    console.log(msg);
+    client.sendInfoMessage(msg);
+  }
 
   client.write(new Buffer(packets.ItemActionReplyPacket2.pack({
     PacketID: 0x2B,
@@ -24,50 +24,22 @@ var NotImplemented = function(client, name, input) {
     RowPickup: input.RowPickup,
     ColumnMove: input.ColumnMove,
     RowMove: input.RowMove,
-    Failed: 1
-  })));
-};
-
-function clientWriteItemActionFailed(client, input) {
-	client.write(new Buffer(packets.ItemActionReplyPacket2.pack({
-		PacketID: 0x2B,
-		ActionType: input.ActionType,
-		ItemUniqueID: input.ItemUniqueID,
-		ItemUniqueID2: input.ItemUniqueID2,
-		ItemID: input.ItemID,
-		Unknown3: input.Unknown3,
-		Unknown4: input.Unknown4,
-		Unknown5: input.Unknown5,
-		Amount: input.Amount,
-		InventoryIndex: input.InventoryIndex,
-		RowDrop: input.RowDrop,
-		ColumnPickup: input.ColumnPickup,
-		RowPickup: input.RowPickup,
-		ColumnMove: input.ColumnMove,
-		RowMove: input.RowMove,
-		Failed: 1
+    Failed: bFailed
   })));
 }
 
+var NotImplemented = function(client, name, input) {
+  var msg = 'Item Action: ' + name + ' is not implemented.';
+
+  WriteInfo(client, input, 1, msg);
+};
+
+function clientWriteItemActionFailed(client, input) {
+	WriteInfo(client, input, 1);
+}
+
 function clientWriteItemActionSuccess(client, input) {
-  client.write(new Buffer(packets.ItemActionReplyPacket2.pack({
-    PacketID: 0x2B,
-    ActionType: input.ActionType,
-    ItemUniqueID: input.ItemUniqueID,
-    ItemUniqueID2: input.ItemUniqueID2,
-    ItemID: input.ItemID,
-    Unknown3: input.Unknown3,
-    Unknown4: input.Unknown4,
-    Unknown5: input.Unknown5,
-    Amount: input.Amount,
-    InventoryIndex: input.InventoryIndex,
-    RowDrop: input.RowDrop,
-    ColumnPickup: input.ColumnPickup,
-    RowPickup: input.RowPickup,
-    ColumnMove: input.ColumnMove,
-    RowMove: input.RowMove,
-    Failed: 0
-  })));
+  WriteInfo(client, input, 0);
 }
 
 function getSlotCount(itemType) {
