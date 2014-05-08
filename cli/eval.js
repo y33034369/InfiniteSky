@@ -12,7 +12,7 @@ cli.eval = function CLI_Eval(input) {
   if (input.length) {
     eval(input); 
   } else {
-  	console.log('please type js');	
+  	console.log('Please type js');	
   }
 };
 

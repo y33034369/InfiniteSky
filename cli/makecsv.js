@@ -20,8 +20,7 @@ function infoToCSV(name, keys, callback) {
 
   var records = [];
 
-	// Put record/csv code here
-  // Write headers
+	// Put record/csv code here and write headers
   records.push(keys);
   
   // Make records
@@ -32,7 +31,7 @@ function infoToCSV(name, keys, callback) {
 
       // Loop through array of keys to output column header
       for (var i = 0; i < keys.length; i++) {
-        record.push(infos[name][id][ keys[i] ]);
+        record.push(infos[name][id][keys[i]]);
       }
 
       records.push(record);
@@ -40,10 +39,10 @@ function infoToCSV(name, keys, callback) {
   }
 
   // Write CSV to a fileof the records
-  var filename = "./data/translation/" + name + ".csv";
+  var filename = './data/translation/' + name + '.csv';
 
-  csv.writeToPath(filename, records, {headers: true}).on("finish", function() {
-    callback(null, "Done writing " + filename);
+  csv.writeToPath(filename, records, {headers: true}).on('finish', function() {
+    callback(null, 'Done writing ' + filename);
   });
 } // end infoToCSV
 

@@ -6,7 +6,7 @@
 /*global cli */
 
 cli.createaccount = function CLI_CreateAccount(input) {
-  var info = _util.sep(['Username','Password','Level'], input.split(' '));
+  var info = _util.sep(['Username', 'Password', 'Level'], input.split(' '));
 
   if (!input) {
     return console.log(cli.createaccount.help(1));
@@ -35,18 +35,18 @@ cli.createaccount = function CLI_CreateAccount(input) {
   // TODO: Move create account into db/account.js as a function
   // TODO: Make a delete account function and maybe ban/suspend?
   // TODO: Make a reset password for account function.
-  db.getNextSequence('accountid',function(id) {
+  db.getNextSequence('accountid', function(id) {
     info._id = id;
 
     var newaccount = new db.Account(info);
 
-    newaccount.save(function (err) {
+    newaccount.save(function(err) {
       if (err) { // Assuming account already exists
         dumpError('Error making account already exists or there was an error.');
         return;
       }
 
-      console.log('Account '+info.Username+' has been created.');
+      console.log('Account ' + info.Username + ' has been created.');
     });
   });
 }; // end cli.createaccount

@@ -8,8 +8,8 @@
 // Should be an object with keys as the reloadable thing
 // Each reloadable thing should consist of a description and a function. Lets store these in an array.
 vms.depends(
-  { name: "CLI_Reload", depends: 'infos.Item,infos.Npc,infos.Monster,infos.Skill' },
-  function () {
+  { name: 'CLI_Reload', depends: 'infos.Item, infos.Npc, infos.Monster, infos.Skill' },
+  function() {
     var reloadables = {
       'config' : [ 'Reloads config file: ' + _util.configFile, _util.loadConfig() ],
       'item'   : [ 'Reloads item info: ',    infos.Item.Reload ],
@@ -34,13 +34,13 @@ vms.depends(
     };
 
     cli.reload.help = function CLI_Reload_help(input) {
-      var help = "A command that can be used to reload things.";
+      var help = 'A command that can be used to reload things.';
 
       if (input) {
         var help_advanced = "Options:\n";
 
         for (var option in reloadables) {
-          help_advanced+= "\t" + option + " - " + reloadables[option][0] + "\n";
+          help_advanced+= "\t" + option + ' - ' + reloadables[option][0] + "\n";
         }
 
         return help + '\n' + help_advanced;

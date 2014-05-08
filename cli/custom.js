@@ -14,12 +14,12 @@ function Custom() {
 
 Custom.prototype = {
   transfer: function(input) { // A way to transfer stored data out if required when reloading
-    if (input === undefined) {
+    if (!input) {
       // Output info
       console.log('output info');
     } else {
       // Input info
-      console.log('input info ',input);
+      console.log('input info ', input);
     }
   },
   test: function() {
