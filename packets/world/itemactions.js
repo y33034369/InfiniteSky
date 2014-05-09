@@ -134,7 +134,6 @@ ItemActions[0x00] = function Recv_PickupItem(client, input) {
       }
 
       // TODO: Check row and columns match for pickup
-
       // Check stack limit
       if (item.Amount + invitem.Amount > 99) {
         // TODO: Test if we can pick up item that would put a stack over its limit.
@@ -629,7 +628,8 @@ ItemActions[0x06] = function Recv_StoreItemInGateMaster(client, input) { // COMP
     }
 };
 
-ItemActions[0x07] = function Recv_SellItem(client, input) { // COMPLETED TODO: Making sure the player is standing in range of NPC and NPC is visible
+// COMPLETED TODO: Making sure the player is standing in range of NPC and NPC is visible
+ItemActions[0x07] = function Recv_SellItem(client, input) {
   var MAX_SILVER  = packets.MAX_SILVER;
   var sellingItem = client.character.Inventory[input.InventoryIndex];
 
@@ -761,7 +761,8 @@ ItemActions[0xB] = function Recv_MoveFromPillBar(client, input) { // COMPLETED
   clientWriteItemActionSuccess(client, input);
 };
 
-ItemActions[0x0C] = function Recv_Use_item(client, input) { // TODO: Heal method on pills and etc. actuall usage of them and update of characters state.
+// TODO: Heal method on pills and etc. actuall usage of them and update of characters state.
+ItemActions[0x0C] = function Recv_Use_item(client, input) {
   var UsedItem = client.character.QuickUseItems[input.InventoryIndex];
 
   if (!UsedItem) {
@@ -791,7 +792,7 @@ ItemActions[0x0C] = function Recv_Use_item(client, input) { // TODO: Heal method
 
       ii.use(client);
 
-      if (UsedItem.Amount-1===0) {
+      if (UsedItem.Amount - 1 === 0) {
         client.character.QuickUseItems[input.InventoryIndex] = null;
       } else {
         client.character.QuickUseItems[input.InventoryIndex].Amount--;
@@ -814,214 +815,244 @@ ItemActions[0x0E] = function Recv_UnequipItem(client, input) { // COMPLETED
     // RowMove = Y Axis of incoming item de equipment
 
     var ItemSlot = client.character.checkInventoryItemCollision(0, input.ColumnMove, input.RowMove, getSlotCount(input.InventoryIndex));
+
     if (!ItemSlot) {
-        clientWriteItemActionFailed(client, input);
-        return;
+      clientWriteItemActionFailed(client, input);
+
+      return;
     } else {
     	switch(input.InventoryIndex){
-			case 0: // Neck
-                var wearedItem = client.character.Amulet;
-                client.character.Inventory[ItemSlot.index] = structs.StorageItem.objectify();
-                client.character.Inventory[ItemSlot.index].ID = wearedItem.ID;
-                client.character.Inventory[ItemSlot.index].Row = ItemSlot.y;
-                client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
-                client.character.Amulet = null;
-			break;
+  			case 0: // Neck
+          var wearedItem = client.character.Amulet;
+
+          client.character.Inventory[ItemSlot.index]        = structs.StorageItem.objectify();
+          client.character.Inventory[ItemSlot.index].ID     = wearedItem.ID;
+          client.character.Inventory[ItemSlot.index].Row    = ItemSlot.y;
+          client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
+
+          client.character.Amulet = null;
+  			break;
 
     		case 1: // Cape
-                var wearedItem = client.character.Cape;
+          var wearedItem = client.character.Cape;
 
-                client.character.Inventory[ItemSlot.index] = structs.StorageItem.objectify();
-                client.character.Inventory[ItemSlot.index].ID = wearedItem.ID;
-                client.character.Inventory[ItemSlot.index].Row = ItemSlot.y;
-                client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
+          client.character.Inventory[ItemSlot.index]        = structs.StorageItem.objectify();
+          client.character.Inventory[ItemSlot.index].ID     = wearedItem.ID;
+          client.character.Inventory[ItemSlot.index].Row    = ItemSlot.y;
+          client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
 
-                client.character.Cape = structs.Equipt.unpack(structs.Equipt.pack({"ID": 0}));
+          client.character.Cape = structs.Equipt.unpack(structs.Equipt.pack({"ID": 0}));
     		break;
 
     		case 2: // Armor
-                var wearedItem = client.character.Armor;
-                client.character.Inventory[ItemSlot.index] = structs.StorageItem.objectify();
-                client.character.Inventory[ItemSlot.index].ID = wearedItem.ID;
-                client.character.Inventory[ItemSlot.index].Row = ItemSlot.y;
-                client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
-                client.character.Inventory[ItemSlot.index].Enchant = wearedItem.Enchant;
-                client.character.Inventory[ItemSlot.index].Combine = wearedItem.Combine;
+          var wearedItem = client.character.Armor;
 
-                client.character.Armor = null;
+          client.character.Inventory[ItemSlot.index]         = structs.StorageItem.objectify();
+          client.character.Inventory[ItemSlot.index].ID      = wearedItem.ID;
+          client.character.Inventory[ItemSlot.index].Row     = ItemSlot.y;
+          client.character.Inventory[ItemSlot.index].Column  = ItemSlot.x;
+          client.character.Inventory[ItemSlot.index].Enchant = wearedItem.Enchant;
+          client.character.Inventory[ItemSlot.index].Combine = wearedItem.Combine;
+
+          client.character.Armor = null;
     		break;
 
     		case 3: // Gloves
-				var wearedItem = client.character.Glove;
-                client.character.Inventory[ItemSlot.index] = structs.StorageItem.objectify();
-                client.character.Inventory[ItemSlot.index].ID = wearedItem.ID;
-                client.character.Inventory[ItemSlot.index].Row = ItemSlot.y;
-                client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
-                client.character.Inventory[ItemSlot.index].Enchant = wearedItem.Enchant;
-                client.character.Inventory[ItemSlot.index].Combine = wearedItem.Combine;
+	        var wearedItem = client.character.Glove;
 
-    			client.character.Glove = null;
+          client.character.Inventory[ItemSlot.index]         = structs.StorageItem.objectify();
+          client.character.Inventory[ItemSlot.index].ID      = wearedItem.ID;
+          client.character.Inventory[ItemSlot.index].Row     = ItemSlot.y;
+          client.character.Inventory[ItemSlot.index].Column  = ItemSlot.x;
+          client.character.Inventory[ItemSlot.index].Enchant = wearedItem.Enchant;
+          client.character.Inventory[ItemSlot.index].Combine = wearedItem.Combine;
+
+          client.character.Glove = null;
     		break;
 
     		case 4: // Ring
-                var wearedItem = client.character.Ring;
-                client.character.Inventory[ItemSlot.index] = structs.StorageItem.objectify();
-                client.character.Inventory[ItemSlot.index].ID = wearedItem.ID;
-                client.character.Inventory[ItemSlot.index].Row = ItemSlot.y;
-                client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
+          var wearedItem = client.character.Ring;
 
-                client.character.Ring = null;
+          client.character.Inventory[ItemSlot.index]        = structs.StorageItem.objectify();
+          client.character.Inventory[ItemSlot.index].ID     = wearedItem.ID;
+          client.character.Inventory[ItemSlot.index].Row    = ItemSlot.y;
+          client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
+
+          client.character.Ring = null;
     		break;
 
     		case 5: // Boots
-                var wearedItem = client.character.Boot;
-                client.character.Inventory[ItemSlot.index] = structs.StorageItem.objectify();
-                client.character.Inventory[ItemSlot.index].ID = wearedItem.ID;
-                client.character.Inventory[ItemSlot.index].Row = ItemSlot.y;
-                client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
-                client.character.Inventory[ItemSlot.index].Enchant = wearedItem.Enchant;
-                client.character.Inventory[ItemSlot.index].Combine = wearedItem.Combine;
+          var wearedItem = client.character.Boot;
 
-                client.character.Boot = null;
+          client.character.Inventory[ItemSlot.index]         = structs.StorageItem.objectify();
+          client.character.Inventory[ItemSlot.index].ID      = wearedItem.ID;
+          client.character.Inventory[ItemSlot.index].Row     = ItemSlot.y;
+          client.character.Inventory[ItemSlot.index].Column  = ItemSlot.x;
+          client.character.Inventory[ItemSlot.index].Enchant = wearedItem.Enchant;
+          client.character.Inventory[ItemSlot.index].Combine = wearedItem.Combine;
+
+          client.character.Boot = null;
     		break;
 
     		case 6: // Bootle
-                var wearedItem = client.character.CalbashBottle;
-                client.character.Inventory[ItemSlot.index] = structs.StorageItem.objectify();
-                client.character.Inventory[ItemSlot.index].ID = wearedItem.ID;
-                client.character.Inventory[ItemSlot.index].Row = ItemSlot.y;
-                client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
+          var wearedItem = client.character.CalbashBottle;
 
-                client.character.CalbashBottle = null;
+          client.character.Inventory[ItemSlot.index]        = structs.StorageItem.objectify();
+          client.character.Inventory[ItemSlot.index].ID     = wearedItem.ID;
+          client.character.Inventory[ItemSlot.index].Row    = ItemSlot.y;
+          client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
+
+          client.character.CalbashBottle = null;
     		break;
 
     		case 7: // Weapon
-                var wearedItem = client.character.Weapon;
-                client.character.Inventory[ItemSlot.index] = structs.StorageItem.objectify();
-                client.character.Inventory[ItemSlot.index].ID = wearedItem.ID;
-                client.character.Inventory[ItemSlot.index].Row = ItemSlot.y;
-                client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
-                client.character.Inventory[ItemSlot.index].Enchant = wearedItem.Enchant;
-                client.character.Inventory[ItemSlot.index].Combine = wearedItem.Combine;
+          var wearedItem = client.character.Weapon;
 
-                client.character.Weapon = null;
+          client.character.Inventory[ItemSlot.index]         = structs.StorageItem.objectify();
+          client.character.Inventory[ItemSlot.index].ID      = wearedItem.ID;
+          client.character.Inventory[ItemSlot.index].Row     = ItemSlot.y;
+          client.character.Inventory[ItemSlot.index].Column  = ItemSlot.x;
+          client.character.Inventory[ItemSlot.index].Enchant = wearedItem.Enchant;
+          client.character.Inventory[ItemSlot.index].Combine = wearedItem.Combine;
+
+          client.character.Weapon = null;
     		break;
 
     		case 8: // Pet
-                var wearedItem = client.character.Pet;
-                client.character.Inventory[ItemSlot.index] = structs.StorageItemPet.objectify();
-                client.character.Inventory[ItemSlot.index].ID = wearedItem.ID;
-                client.character.Inventory[ItemSlot.index].Row = ItemSlot.y;
-                client.character.Inventory[ItemSlot.index].Column = ItemSlot.x;
-                client.character.Inventory[ItemSlot.index].Growth = wearedItem.Growth;
-                client.character.Inventory[ItemSlot.index].Activity = wearedItem.Activity;
+          var wearedItem = client.character.Pet;
 
-                client.character.Pet = null;
+          client.character.Inventory[ItemSlot.index]          = structs.StorageItemPet.objectify();
+          client.character.Inventory[ItemSlot.index].ID       = wearedItem.ID;
+          client.character.Inventory[ItemSlot.index].Row      = ItemSlot.y;
+          client.character.Inventory[ItemSlot.index].Column   = ItemSlot.x;
+          client.character.Inventory[ItemSlot.index].Growth   = wearedItem.Growth;
+          client.character.Inventory[ItemSlot.index].Activity = wearedItem.Activity;
+
+          client.character.Pet = null;
     		break;
 
     		default:
-    			console.log(input.InventoryIndex + " is not defined as Unequip item!");
-                clientWriteItemActionFailed(client, input);
-                return;
+    			console.log(input.InventoryIndex + ' is not defined as Unequip item!');
+          clientWriteItemActionFailed(client, input);
+
+          return;
     		break;
     	}
 
-        client.character.markModified('Inventory');
-        client.character.save();
+      client.character.markModified('Inventory');
+      client.character.save();
 
-        clientWriteItemActionSuccess(client, input);
+      clientWriteItemActionSuccess(client, input);
     }
 };
 
 ItemActions[0x0F] = function Recv_MoveItemFromStorage(client, input) {
-    NotImplemented(client, 'Recv_MoveItemFromStorage', input);
-    console.log(input);
-    var existingItem = client.character.Storage[input.InventoryIndex];
+  var existingItem;
 
-    if(existingItem == undefined || input.ItemID !== existingItem.ID){
-        clientWriteItemActionFailed(client, input);
-        return;
-    }else{
-        var itemInfo = infos.Item[existingItem.ID];
-        var getInventoryCollision = client.character.checkInventoryItemCollision(0, input.ColumnMove, input.RowMove, itemInfo.getSlotCount());
-    
-        if(!getInventoryCollision){
-            clientWriteItemActionFailed(client, input);
-            return;
-        }else{
-            client.character.Storage[input.InventoryIndex] = null;
-            if(itemInfo.ItemType === 22){
-                client.character.Inventory[getInventoryCollision.index] = structs.StorageItemPet.objectify();
-                client.character.Inventory[getInventoryCollision.index].Growth = existingItem.Growth;
-                client.character.Inventory[getInventoryCollision.index].Activity = existingItem.Activity;
-            }else{
-                client.character.Inventory[getInventoryCollision.index] = structs.StorageItem.objectify();
+  NotImplemented(client, 'Recv_MoveItemFromStorage', input);
+  console.log(input);
 
-                if(existingItem.Amount > 0 && existingItem.Amount === input.Amount)
-                client.character.Inventory[getInventoryCollision.index].Amount = existingItem.Amount;
-                else client.character.Inventory[getInventoryCollision.index].Amount = 0;
+  existingItem = client.character.Storage[input.InventoryIndex];
 
-                client.character.Inventory[getInventoryCollision.index].Enchant = existingItem.Enchant;
-                client.character.Inventory[getInventoryCollision.index].Combine = existingItem.Combine;
-            }
+  if (!existingItem || input.ItemID !== existingItem.ID) {
+    clientWriteItemActionFailed(client, input);
 
+    return;
+  } else {
+    var itemInfo = infos.Item[existingItem.ID];
+    var getInventoryCollision = client.character.checkInventoryItemCollision(0, input.ColumnMove, input.RowMove, itemInfo.getSlotCount());
+  
+    if (!getInventoryCollision){
+      clientWriteItemActionFailed(client, input);
 
-            client.character.Inventory[getInventoryCollision.index].Column = getInventoryCollision.x;
-            client.character.Inventory[getInventoryCollision.index].Row = getInventoryCollision.y;
-            client.character.Inventory[getInventoryCollision.index].ID = input.ItemID;
-            client.character.markModified("Inventory");
-            client.character.markModified("Storage");
-            client.character.save();
-            clientWriteItemActionSuccess(client, input);
+      return;
+    } else {
+      client.character.Storage[input.InventoryIndex] = null;
+
+      if (itemInfo.ItemType === 22) {
+        client.character.Inventory[getInventoryCollision.index]          = structs.StorageItemPet.objectify();
+        client.character.Inventory[getInventoryCollision.index].Growth   = existingItem.Growth;
+        client.character.Inventory[getInventoryCollision.index].Activity = existingItem.Activity;
+      } else {
+        client.character.Inventory[getInventoryCollision.index] = structs.StorageItem.objectify();
+
+        if (existingItem.Amount > 0 && existingItem.Amount === input.Amount) {
+          client.character.Inventory[getInventoryCollision.index].Amount = existingItem.Amount;
+        } else {
+          client.character.Inventory[getInventoryCollision.index].Amount = 0;
         }
+
+        client.character.Inventory[getInventoryCollision.index].Enchant = existingItem.Enchant;
+        client.character.Inventory[getInventoryCollision.index].Combine = existingItem.Combine;
+      }
+
+      client.character.Inventory[getInventoryCollision.index].Column = getInventoryCollision.x;
+      client.character.Inventory[getInventoryCollision.index].Row    = getInventoryCollision.y;
+      client.character.Inventory[getInventoryCollision.index].ID     = input.ItemID;
+
+      client.character.markModified("Inventory");
+      client.character.markModified("Storage");
+      
+      client.character.save();
+      clientWriteItemActionSuccess(client, input);
     }
+  }
 };
 
 ItemActions[0x10] = function Recv_GetItemFromGateMasterStorage(client, input) { // COMPLETED
-    var existingItem = client.character.Bank[input.InventoryIndex];
+  var existingItem = client.character.Bank[input.InventoryIndex];
 
-    if(existingItem == undefined || input.ItemID !== existingItem.ID){
-        clientWriteItemActionFailed(client, input);
-        return;
-    }else{
-        var itemInfo = infos.Item[existingItem.ID];
-        var getInventoryCollision = client.character.checkInventoryItemCollision(0, input.ColumnMove, input.RowMove, itemInfo.getSlotCount());
-    
-        if(!getInventoryCollision){
-            clientWriteItemActionFailed(client, input);
-            return;
-        }else{
-            client.character.Bank[input.InventoryIndex] = null;
-            if(itemInfo.ItemType === 22){
-                client.character.Inventory[getInventoryCollision.index] = structs.StorageItemPet.objectify();
-                client.character.Inventory[getInventoryCollision.index].Growth = existingItem.Growth;
-                client.character.Inventory[getInventoryCollision.index].Activity = existingItem.Activity;
-            }else{
-                client.character.Inventory[getInventoryCollision.index] = structs.StorageItem.objectify();
+  if (!existingItem || input.ItemID !== existingItem.ID) {
+    clientWriteItemActionFailed(client, input);
 
-                if(existingItem.Amount > 0 && existingItem.Amount === input.Amount)
-                client.character.Inventory[getInventoryCollision.index].Amount = existingItem.Amount;
-                else client.character.Inventory[getInventoryCollision.index].Amount = 0;
+    return;
+  } else {
+    var itemInfo = infos.Item[existingItem.ID];
+    var getInventoryCollision = client.character.checkInventoryItemCollision(0, input.ColumnMove, input.RowMove, itemInfo.getSlotCount());
 
-                client.character.Inventory[getInventoryCollision.index].Enchant = existingItem.Enchant;
-                client.character.Inventory[getInventoryCollision.index].Combine = existingItem.Combine;
-            }
+    if (!getInventoryCollision) {
+      clientWriteItemActionFailed(client, input);
+      
+      return;
+    } else {
+      client.character.Bank[input.InventoryIndex] = null;
 
+      if (itemInfo.ItemType === 22) {
+        client.character.Inventory[getInventoryCollision.index]          = structs.StorageItemPet.objectify();
+        client.character.Inventory[getInventoryCollision.index].Growth   = existingItem.Growth;
+        client.character.Inventory[getInventoryCollision.index].Activity = existingItem.Activity;
+      } else {
+        client.character.Inventory[getInventoryCollision.index] = structs.StorageItem.objectify();
 
-            client.character.Inventory[getInventoryCollision.index].Column = getInventoryCollision.x;
-            client.character.Inventory[getInventoryCollision.index].Row = getInventoryCollision.y;
-            client.character.Inventory[getInventoryCollision.index].ID = input.ItemID;
-            client.character.markModified("Inventory");
-            client.character.save();
-            client.character.saveBank();
-            clientWriteItemActionSuccess(client, input);
+        if (existingItem.Amount > 0 && existingItem.Amount === input.Amount) {
+          client.character.Inventory[getInventoryCollision.index].Amount = existingItem.Amount;
+        } else {
+          client.character.Inventory[getInventoryCollision.index].Amount = 0;
         }
+
+        client.character.Inventory[getInventoryCollision.index].Enchant = existingItem.Enchant;
+        client.character.Inventory[getInventoryCollision.index].Combine = existingItem.Combine;
+      }
+
+      client.character.Inventory[getInventoryCollision.index].Column = getInventoryCollision.x;
+      client.character.Inventory[getInventoryCollision.index].Row    = getInventoryCollision.y;
+      client.character.Inventory[getInventoryCollision.index].ID     = input.ItemID;
+
+      client.character.markModified("Inventory");
+
+      client.character.save();
+      client.character.saveBank();
+
+      clientWriteItemActionSuccess(client, input);
     }
+  }
 };
+
+/******************************************************************* CLEANUP ************************************************************************************/
 
 ItemActions[0x11] = function Recv_BuyItem(client, input) { // COMPLETED
     var itemInfo = infos.Item[input.ItemID];
-    var NpcInfo = infos.Npc[input.ItemUniqueID];
+    var NpcInfo  = infos.Npc[input.ItemUniqueID];
 
     if(itemInfo !== undefined && NpcInfo !== undefined && NpcInfo.Items.indexOf(input.ItemID)){ // TODO: Check if the Npc has the item in their store
         if( itemInfo === undefined || itemInfo === null || input.Amount > 99 || input.Amount < 0){
